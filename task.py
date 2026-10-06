@@ -10,7 +10,7 @@ from collections import Counter
 
 pytorch_transforms = Compose([
     Lambda(lambda img: img.convert("RGB")),
-    Resize((224, 224)),
+    Resize((32, 32)),
     ToTensor(),
     Normalize(
         mean=[0.485, 0.456, 0.406],
@@ -23,28 +23,28 @@ def apply_transforms(batch):
     batch["img"] = [pytorch_transforms(img) for img in batch["img"]]
     return batch
 
-brain_dataset = None
+dataset = None
 
 def get_dataset():
-    global brain_dataset
-    DATASET_PATH = "data/brain-tumor-multimodal-image"
-    if brain_dataset is None:
-        loader = create_dataset('brain_tumor', DATASET_PATH)
-        brain_dataset = loader.load()
+    global dataset
+    # DATASET_PATH = "data/brain-tumor-multimodal-image"
+    if dataset is None:
+        loader = create_dataset('cifar10', None)
+        dataset = loader.load()
 
-    return brain_dataset
+    return dataset
 
 def load_data(partition_id: int, num_partitions: int, batch_size: int):
 
-    brain_dataset = get_dataset()
+    dataset = get_dataset()
     partitioner = get_partitioner(num_partitions)
     
-    partitioner.dataset = brain_dataset["train"]
+    partitioner.dataset = dataset["train"]
     partition = partitioner.load_partition(partition_id)
 
     print(f"Client {partition_id}: Partition size = {len(partition)}")
 
-    print(Counter(partition["modality"]))
+    # print(Counter(partition["modality"]))
     print(Counter(partition["label"]))
  
     partition = partition.train_test_split(test_size=0.2, seed=42,)

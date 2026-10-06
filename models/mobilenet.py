@@ -21,7 +21,7 @@ class MobileNetModel(BaseModel):
             nn.Linear(1280, 256),
             nn.ReLU(inplace=True),
             nn.Dropout(p=0.3),
-            nn.Linear(256, 2),
+            nn.Linear(256, 10),
         )
 
         return model

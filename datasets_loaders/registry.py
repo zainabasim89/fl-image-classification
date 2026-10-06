@@ -1,8 +1,8 @@
 from .brain_tumor_dataset import BrainTumorLoader
-#from .kaggle_mri_dataset import KaggleMRILoader
+from .cifar10_dataset import CIFAR10Loader
 
 
 DATASET_REGISTRY = {
     "brain_tumor": BrainTumorLoader,
-#    "kaggle_mri": KaggleMRILoader,
+    "cifar10": CIFAR10Loader,
 }
