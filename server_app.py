@@ -40,6 +40,10 @@ def main(grid: Grid, context: Context) -> None:
     if algorithm == "fedprox":
         strategy_kwargs["proximal_mu"] = context.run_config["proximal-mu"]
 
+    if algorithm == "fedavgm":
+        strategy_kwargs["server_learning_rate"] = context.run_config["server-learning-rate"]
+        strategy_kwargs["server_momentum"] = context.run_config["server-momentum"]
+
     strategy = get_strategy(algorithm, **strategy_kwargs)
 
     # Start strategy, run FedAvg for `num_rounds`
