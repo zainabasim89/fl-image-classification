@@ -1,9 +1,10 @@
-from flwr.serverapp.strategy import FedAvg, FedProx, FedAvgM
+from flwr.serverapp.strategy import FedAvg, FedProx, FedAvgM, FedAdam
 
 STRATEGY_REGISTRY = {
     "fedavg": FedAvg,
     "fedprox": FedProx,
     "fedavgm": FedAvgM,
+    "fedadam": FedAdam,
 }
 
 

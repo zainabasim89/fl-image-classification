@@ -1,11 +1,13 @@
 from .fedavg import FedAvgTrainer
 from .fedprox import FedProxTrainer
 from .fedavgm import FedAvgMTrainer
+from .fedadam import FedAdamTrainer
 
 TRAINER_REGISTRY = {
     "fedavg": FedAvgTrainer,
     "fedprox": FedProxTrainer,
     "fedavgm": FedAvgMTrainer,
+    "fedadam": FedAdamTrainer,
 }
 
 
