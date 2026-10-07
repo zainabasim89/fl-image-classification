@@ -4,6 +4,7 @@ from .fedavgm import FedAvgMTrainer
 from .fedadam import FedAdamTrainer
 from .fedadagrad import FedAdagradTrainer
 from .fedyogi import FedYogiTrainer
+from .fedmedian import FedMedianTrainer
 
 TRAINER_REGISTRY = {
     "fedavg": FedAvgTrainer,
@@ -12,6 +13,7 @@ TRAINER_REGISTRY = {
     "fedadam": FedAdamTrainer,
     "fedadagrad": FedAdagradTrainer,
     "fedyogi": FedYogiTrainer,
+    "fedmedian": FedMedianTrainer,
 }
 
 
