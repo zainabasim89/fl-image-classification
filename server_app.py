@@ -40,15 +40,20 @@ def main(grid: Grid, context: Context) -> None:
     if algorithm == "fedprox":
         strategy_kwargs["proximal_mu"] = context.run_config["proximal-mu"]
 
-    if algorithm == "fedavgm":
+    elif algorithm == "fedavgm":
         strategy_kwargs["server_learning_rate"] = context.run_config["server-learning-rate"]
         strategy_kwargs["server_momentum"] = context.run_config["server-momentum"]
 
-    if algorithm == "fedadam":
+    elif algorithm == "fedadam":
         strategy_kwargs["eta"] = context.run_config["server-learning-rate"]
         strategy_kwargs["eta_l"] = context.run_config["learning-rate"]
         strategy_kwargs["beta_1"] = context.run_config["beta-1"]
         strategy_kwargs["beta_2"] = context.run_config["beta-2"]
+        strategy_kwargs["tau"] = context.run_config["tau"]
+
+    elif algorithm == "fedadagrad":
+        strategy_kwargs["eta"] = context.run_config["server-learning-rate"]
+        strategy_kwargs["eta_l"] = context.run_config["learning-rate"]
         strategy_kwargs["tau"] = context.run_config["tau"]
 
     strategy = get_strategy(algorithm, **strategy_kwargs)
