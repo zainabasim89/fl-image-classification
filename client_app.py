@@ -11,18 +11,37 @@ from algorithms import get_trainer
 
 from models import create_model
 
+from utils.fedbn_helper import get_fedbn_state_dict, get_bn_state_dict, load_bn_state_dict
+
 # Flower ClientApp
 app = ClientApp()
-
 
 @app.train()
 def train(msg: Message, context: Context):
     """Train the model on local data."""
 
-    # Load the model and initialize it with the received weights
+    algorithm = context.run_config["algorithm"]
     model_name = context.run_config["model_name"]
+    # Create model
     model = create_model(model_name)
-    model.load_state_dict(msg.content["arrays"].to_torch_state_dict())
+    # Load received parameters
+    received_state= msg.content["arrays"].to_torch_state_dict()
+
+    if algorithm == "fedbn":
+        # Load shared/global parameters
+        model.load_state_dict(received_state, strict=False,)
+
+        # Restore this client's local BatchNorm state
+        if "fedbn_bn_state" in context.state:
+            print("Restoring local BN state")
+            bn_state = context.state["fedbn_bn_state"].to_torch_state_dict()
+            load_bn_state_dict(model, bn_state)
+        else:
+            print("No previous BN state")
+
+    else:
+        model.load_state_dict(received_state)
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
@@ -49,8 +68,18 @@ def train(msg: Message, context: Context):
         device,
     )
 
+    if algorithm == "fedbn":
+        bn_state = get_bn_state_dict(model)
+        context.state["fedbn_bn_state"] = ArrayRecord(bn_state)
+        print("Saved local BN state")
+
     # Construct and return reply Message
-    model_record = ArrayRecord(model.state_dict())
+    if algorithm == "fedbn":
+        model_record = ArrayRecord(get_fedbn_state_dict(model))
+    else:
+        model_record = ArrayRecord(model.state_dict())
+
+
     metrics = {
         "train_loss": train_loss,
         "num-examples": len(trainloader.dataset),
@@ -67,12 +96,22 @@ def train(msg: Message, context: Context):
 @app.evaluate()
 def evaluate(msg: Message, context: Context):
     """Evaluate the model on local data."""
-
-    # Load the model and initialize it with the received weights
+    
+    algorithm = context.run_config["algorithm"]
     model_name = context.run_config["model_name"]
+
     model = create_model(model_name)
-    # model = Net()
-    model.load_state_dict(msg.content["arrays"].to_torch_state_dict())
+   
+    received_state = msg.content["arrays"].to_torch_state_dict()
+
+    if algorithm == "fedbn":
+        model.load_state_dict(received_state, strict=False,)
+        if "fedbn_bn_state" in context.state:
+            bn_state = context.state["fedbn_bn_state"].to_torch_state_dict()
+            load_bn_state_dict(model, bn_state)
+    else:
+        model.load_state_dict(received_state,)
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
 

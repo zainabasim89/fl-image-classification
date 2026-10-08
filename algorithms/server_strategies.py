@@ -10,6 +10,7 @@ STRATEGY_REGISTRY = {
     "fedyogi": FedYogi,
     "fedmedian": FedMedian,
     "fednova": FedNova,
+    "fedbn": FedAvg,
 }
 
 

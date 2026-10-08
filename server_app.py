@@ -8,6 +8,8 @@ from algorithms.server_strategies import get_strategy
 
 from models import create_model
 
+from utils.fedbn_helper import get_fedbn_state_dict
+
 # Create ServerApp
 app = ServerApp()
 model_name = None
@@ -28,7 +30,11 @@ def main(grid: Grid, context: Context) -> None:
 
     # Load global model
     global_model = create_model(model_name)    
-    arrays = ArrayRecord(global_model.state_dict())
+
+    if algorithm == "fedbn":
+        arrays = ArrayRecord(get_fedbn_state_dict(global_model))
+    else:
+        arrays = ArrayRecord(global_model.state_dict())
 
     # Build kwargs relevant to whichever strategy is picked;
     # extras are ignored by strategies that don't use them
@@ -62,13 +68,18 @@ def main(grid: Grid, context: Context) -> None:
     
     strategy = get_strategy(algorithm, **strategy_kwargs)
 
+    if algorithm == "fedbn":
+        evaluate_fn = None
+    else:
+        evaluate_fn = global_evaluate
+
     # Start strategy, run FedAvg for `num_rounds`
     result = strategy.start(
         grid=grid,
         initial_arrays=arrays,
         train_config=ConfigRecord({"lr": lr}),
         num_rounds=num_rounds,
-        evaluate_fn=global_evaluate,
+        evaluate_fn=evaluate_fn,
     )
 
     if context.run_config["save-model"]:
