@@ -56,6 +56,10 @@ def main(grid: Grid, context: Context) -> None:
         strategy_kwargs["eta_l"] = context.run_config["learning-rate"]
         strategy_kwargs["tau"] = context.run_config["tau"]
 
+    elif algorithm == "fednova":
+            strategy_kwargs["server_learning_rate"] = context.run_config.get("server-learning-rate")
+            strategy_kwargs["server_momentum"] = context.run_config.get("server-momentum")
+    
     strategy = get_strategy(algorithm, **strategy_kwargs)
 
     # Start strategy, run FedAvg for `num_rounds`

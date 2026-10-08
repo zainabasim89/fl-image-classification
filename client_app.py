@@ -55,6 +55,10 @@ def train(msg: Message, context: Context):
         "train_loss": train_loss,
         "num-examples": len(trainloader.dataset),
     }
+    
+    if hasattr(trainer, "get_metrics"):
+        metrics.update(trainer.get_metrics())
+
     metric_record = MetricRecord(metrics)
     content = RecordDict({"arrays": model_record, "metrics": metric_record})
     return Message(content=content, reply_to=msg)
