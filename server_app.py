@@ -9,15 +9,17 @@ from algorithms.server_strategies import get_strategy
 from models import create_model
 
 from utils.fedbn_helper import get_fedbn_state_dict
+from algorithms.fedpara import convert_to_fedpara
 
 # Create ServerApp
 app = ServerApp()
 model_name = None
+algorithm = None
 @app.main()
 
 def main(grid: Grid, context: Context) -> None:
     """Main entry point for the ServerApp."""
-    global model_name 
+    global model_name, algorithm
     algorithm = context.run_config["algorithm"]
 
     # Read run config
@@ -29,7 +31,10 @@ def main(grid: Grid, context: Context) -> None:
     model_name = context.run_config["model_name"]
 
     # Load global model
-    global_model = create_model(model_name)    
+    global_model = create_model(model_name)
+
+    if algorithm == "fedpara":
+        convert_to_fedpara(global_model)    
 
     if algorithm == "fedbn":
         arrays = ArrayRecord(get_fedbn_state_dict(global_model))
@@ -95,6 +100,10 @@ def global_evaluate(server_round: int, arrays: ArrayRecord) -> MetricRecord:
     # Load the model and initialize it with the received weights
    
     model = create_model(model_name)  
+
+    if algorithm == "fedpara":
+        convert_to_fedpara(model)
+
     model.load_state_dict(arrays.to_torch_state_dict())
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)

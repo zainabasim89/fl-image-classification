@@ -12,6 +12,7 @@ from algorithms import get_trainer
 from models import create_model
 
 from utils.fedbn_helper import get_fedbn_state_dict, get_bn_state_dict, load_bn_state_dict
+from algorithms.fedpara import convert_to_fedpara
 
 # Flower ClientApp
 app = ClientApp()
@@ -24,6 +25,10 @@ def train(msg: Message, context: Context):
     model_name = context.run_config["model_name"]
     # Create model
     model = create_model(model_name)
+    
+    if algorithm == "fedpara":
+        convert_to_fedpara(model)
+
     # Load received parameters
     received_state= msg.content["arrays"].to_torch_state_dict()
 
@@ -101,6 +106,8 @@ def evaluate(msg: Message, context: Context):
     model_name = context.run_config["model_name"]
 
     model = create_model(model_name)
+    if algorithm == "fedpara":
+        convert_to_fedpara(model)
    
     received_state = msg.content["arrays"].to_torch_state_dict()
 

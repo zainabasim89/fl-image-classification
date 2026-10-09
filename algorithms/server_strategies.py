@@ -1,5 +1,6 @@
 from flwr.serverapp.strategy import FedAvg, FedProx, FedAvgM, FedAdam, FedAdagrad, FedYogi, FedMedian
 from .fednova import FedNova
+from .fedpara import FedPara
 
 STRATEGY_REGISTRY = {
     "fedavg": FedAvg,
@@ -11,6 +12,7 @@ STRATEGY_REGISTRY = {
     "fedmedian": FedMedian,
     "fednova": FedNova,
     "fedbn": FedAvg,
+    "fedpara": FedPara,
 }
 
 
