@@ -2,7 +2,8 @@ import torch
 from flwr.app import ArrayRecord, ConfigRecord, Context, MetricRecord
 from flwr.serverapp import Grid, ServerApp
 
-from task import load_centralized_dataset, test
+from task import load_centralized_dataset
+from utils.metrics import evaluate_model
 
 from algorithms.server_strategies import get_strategy
 
@@ -112,7 +113,7 @@ def global_evaluate(server_round: int, arrays: ArrayRecord) -> MetricRecord:
     test_dataloader = load_centralized_dataset()
 
     # Evaluate the global model on the test set
-    test_loss, test_acc = test(model, test_dataloader, device)
+    test_loss, test_acc = evaluate_model(model, test_dataloader, device)
 
     # Return the evaluation metrics
     return MetricRecord({"accuracy": test_acc, "loss": test_loss})

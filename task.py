@@ -1,7 +1,4 @@
 """pytorchexample: A Flower / PyTorch app."""
-
-import torch
-import torch.nn as nn
 from datasets_loaders import create_dataset
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Resize, ToTensor, Normalize, Lambda
@@ -64,19 +61,3 @@ def load_centralized_dataset():
     test_dataset = dataset["test"]
     dataset = test_dataset.with_format("torch").with_transform(apply_transforms)
     return DataLoader(dataset, batch_size=128)
-
-def test(net, testloader, device):
-    """Validate the model on the test set."""
-    net.to(device)
-    criterion = torch.nn.CrossEntropyLoss()
-    correct, loss = 0, 0.0
-    with torch.no_grad():
-        for batch in testloader:
-            images = batch["img"].to(device)
-            labels = batch["label"].to(device)
-            outputs = net(images)
-            loss += criterion(outputs, labels).item()
-            correct += (torch.max(outputs.data, 1)[1] == labels).sum().item()
-    accuracy = correct / len(testloader.dataset)
-    loss = loss / len(testloader)
-    return loss, accuracy

@@ -5,7 +5,7 @@ from flwr.app import ArrayRecord, Context, Message, MetricRecord, RecordDict
 from flwr.clientapp import ClientApp
 
 from task import load_data
-from task import test as test_fn
+from utils.metrics import evaluate_model
 
 from algorithms import get_trainer
 
@@ -129,7 +129,7 @@ def evaluate(msg: Message, context: Context):
     _, valloader = load_data(partition_id, num_partitions, batch_size)
 
     # Call the evaluation function
-    eval_loss, eval_acc = test_fn(
+    eval_loss, eval_acc = evaluate_model(
         model,
         valloader,
         device,
