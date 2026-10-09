@@ -38,8 +38,8 @@ class FedNova(FedAvg):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        self.server_learning_rate = 1.0 if server_learning_rate is None else float(server_learning_rate)
-        self.server_momentum = 0.0 if server_momentum is None else float(server_momentum)
+        self.server_learning_rate = float(server_learning_rate)
+        self.server_momentum = float(server_momentum)
         self.momentum_buffer = None
 
     def configure_train(self, server_round, arrays, config, grid):
