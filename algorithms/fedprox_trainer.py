@@ -1,5 +1,5 @@
 import torch
-from .base import BaseTrainer
+from .base_trainer import BaseTrainer
 
 class FedProxTrainer(BaseTrainer):
     """FedAvg + proximal term penalizing drift from the global model."""

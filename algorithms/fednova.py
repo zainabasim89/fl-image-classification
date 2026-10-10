@@ -4,7 +4,7 @@ import numpy as np
 from flwr.app import Array, ArrayRecord
 from flwr.serverapp.strategy import FedAvg
 
-from .base import BaseTrainer
+from .base_trainer import BaseTrainer
 
 
 class FedNovaTrainer(BaseTrainer):

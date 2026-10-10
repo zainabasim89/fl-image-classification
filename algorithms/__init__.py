@@ -1,12 +1,12 @@
-from .fedavg import FedAvgTrainer
-from .fedprox import FedProxTrainer
-from .fedavgm import FedAvgMTrainer
-from .fedadam import FedAdamTrainer
-from .fedadagrad import FedAdagradTrainer
-from .fedyogi import FedYogiTrainer
-from .fedmedian import FedMedianTrainer
+from .fedavg_trainer import FedAvgTrainer
+from .fedprox_trainer import FedProxTrainer
+from .fedavgm_trainer import FedAvgMTrainer
+from .fedadam_trainer import FedAdamTrainer
+from .fedadagrad_trainer import FedAdagradTrainer
+from .fedyogi_trainer import FedYogiTrainer
+from .fedmedian_trainer import FedMedianTrainer
 from .fednova import FedNovaTrainer
-from .fedbn import FedBNTrainer
+from .fedbn_trainer import FedBNTrainer
 from .fedpara import FedParaTrainer
 
 TRAINER_REGISTRY = {
