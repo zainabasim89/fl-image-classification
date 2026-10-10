@@ -5,7 +5,7 @@ from .fedadam_trainer import FedAdamTrainer
 from .fedadagrad_trainer import FedAdagradTrainer
 from .fedyogi_trainer import FedYogiTrainer
 from .fedmedian_trainer import FedMedianTrainer
-from .fednova import FedNovaTrainer
+from .fednova_trainer import FedNovaTrainer
 from .fedbn_trainer import FedBNTrainer
 from .fedpara import FedParaTrainer
 
