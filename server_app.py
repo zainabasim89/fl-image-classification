@@ -10,7 +10,7 @@ from algorithms.server_strategies import get_strategy
 from models import create_model
 
 from utils.fedbn_helper import get_fedbn_state_dict
-from algorithms.fedpara import convert_to_fedpara
+from utils.fedpara_helper import convert_to_fedpara
 
 # Create ServerApp
 app = ServerApp()

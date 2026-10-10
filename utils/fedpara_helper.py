@@ -6,9 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import init
-from flwr.serverapp.strategy import FedAvg
-
-from .base import BaseTrainer
 
 # =====================================
 # 1. Low-Rank Fully Connected Layer 
@@ -157,19 +154,3 @@ def convert_to_fedpara(model: nn.Module, ratio: float = 0.1) -> nn.Module:
             convert_to_fedpara(child, ratio=ratio)
 
     return model
-
-# ============================================================================
-# 4. Client Trainer and Server Strategy
-# ============================================================================
-
-class FedParaTrainer(BaseTrainer):
-    """Client-side trainer for FedPara matching Flower's baseline."""
-
-    def compute_loss(self, model, outputs, labels, criterion):
-        return criterion(outputs, labels)
-
-
-class FedPara(FedAvg):
-    """Server-side strategy for FedPara.
-    In Flower's fedpara baseline, the server aggregates low-rank parameters using FedAvg."""
-    pass
