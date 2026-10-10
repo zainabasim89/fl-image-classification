@@ -1,4 +1,4 @@
-from .base import BaseTrainer
+from .base_trainer import BaseTrainer
 
 
 class FedAvgTrainer(BaseTrainer):
