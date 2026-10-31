@@ -1,5 +1,6 @@
 from flwr.serverapp.strategy import FedAvg, FedProx, FedAvgM, FedAdam, FedAdagrad, FedYogi, FedMedian
 from .fednova import FedNova
+from .fedpft import FedPFT
 from .fedmeta import FedMeta
 from .floco import Floco 
 from .scaffold import Scaffold
@@ -17,6 +18,7 @@ STRATEGY_REGISTRY = {
     "fedpara": FedAvg,
     "fedrep": FedAvg,
     "moon": FedAvg,
+    "fedpft": FedPFT,
     "fedmlb": FedAvg,
     "fedper": FedAvg,
     "floco": Floco,

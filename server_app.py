@@ -94,6 +94,13 @@ def main(grid: Grid, context: Context) -> None:
     elif algorithm == "fednova":
         strategy_kwargs["server_learning_rate"] = context.run_config.get("server-learning-rate")
         strategy_kwargs["server_momentum"] = context.run_config.get("server-momentum")
+
+    elif algorithm == "fedpft":
+        strategy_kwargs["feature_dim"] = global_model.fc.in_features
+        strategy_kwargs["num_classes"] = global_model.fc.out_features
+        strategy_kwargs["cov_type"] = context.run_config["fedpft-cov-type"]
+        strategy_kwargs["seed"] = context.run_config["fedpft-gmm-seed"]
+        strategy_kwargs["head_epochs"] = context.run_config["fedpft-head-epochs"]
         
     elif algorithm in ("fedmeta_maml", "fedmeta_meta_sgd"):
         strategy_kwargs["algo"] = algorithm
@@ -157,7 +164,7 @@ def global_evaluate(server_round: int, arrays: ArrayRecord) -> MetricRecord:
         endpoints = floco_endpoints or 3
         model = convert_to_floco(model, endpoints=floco_endpoints, seed=seed)
 
-    model.load_state_dict(arrays.to_torch_state_dict())
+    model.load_state_dict(arrays.to_torch_state_dict(), strict=(algorithm != "fedpft"))
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
 

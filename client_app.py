@@ -150,6 +150,9 @@ def train(msg: Message, context: Context):
         else:
             print(f"[FedPer] Client {context.node_config['partition-id']}: no previous head; using initialized head")
 
+    elif algorithm == "fedpft":
+        model.load_state_dict(received_state, strict=False)
+
     else:
         model.load_state_dict(received_state)
 
@@ -166,7 +169,14 @@ def train(msg: Message, context: Context):
     algorithm = context.run_config["algorithm"]
     cfg = msg.content.get("config", {})
 
-    if algorithm == "scaffold":
+    if algorithm == "fedpft":
+        trainer = get_trainer(
+            algorithm,
+            n_mixtures=context.run_config.get("fedpft-n-mixtures", 1),
+            cov_type=context.run_config.get("fedpft-cov-type", "spherical"),
+            seed=context.run_config.get("fedpft-gmm-seed", 0),
+        )
+    elif algorithm == "scaffold":
         trainer = get_trainer(
             algorithm,
             server_cv=scaffold_server_cv,
@@ -291,6 +301,8 @@ def train(msg: Message, context: Context):
         model_record = ArrayRecord(get_fedrep_shared_state_dict(model))
     elif algorithm == "fedper":
         model_record = ArrayRecord(get_fedper_shared_state_dict(model))
+    elif algorithm == "fedpft":
+        model_record = ArrayRecord(trainer.gmm_arrays)
     elif algorithm in ("fedmeta_maml", "fedmeta_meta_sgd"):
         model_record = ArrayRecord(trainer.get_gradients())    
     elif algorithm == "scaffold":
@@ -368,6 +380,9 @@ def evaluate(msg: Message, context: Context):
         if "fedper_head_state" in context.state:
             head_state = context.state["fedper_head_state"].to_torch_state_dict()
             load_fedper_head_state_dict(model, head_state)
+
+    elif algorithm == "fedpft":
+        model.load_state_dict(received_state, strict=False)
 
     else:
         model.load_state_dict(received_state,)

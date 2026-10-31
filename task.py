@@ -5,9 +5,11 @@ from torchvision.transforms import Compose, Resize, ToTensor, Normalize, Lambda
 from utils.partitioner_helper import get_partitioner
 from collections import Counter
 
+IMAGE_SIZE = 64
+
 pytorch_transforms = Compose([
     Lambda(lambda img: img.convert("RGB")),
-    Resize((32, 32)),
+    Resize((IMAGE_SIZE, IMAGE_SIZE)),
     ToTensor(),
     Normalize(
         mean=[0.485, 0.456, 0.406],
@@ -46,7 +48,7 @@ def load_data(partition_id: int, num_partitions: int, batch_size: int):
  
     partition = partition.train_test_split(test_size=0.2, seed=42,)
 
-    print(f"Client {partition_id}: train={len(partition["train"])}, test={len(partition["test"])}")
+    print(f"Client {partition_id}: train={len(partition['train'])}, test={len(partition['test'])}")
 
     partition = partition.with_transform(apply_transforms)
     trainloader = DataLoader( partition["train"], batch_size=batch_size, shuffle=True, drop_last=True)
